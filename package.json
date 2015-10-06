@@ -1,5 +1,5 @@
 {
-  "name": "3makkk-angular-slack",
+  "name": "angular-3makkk-slack",
   "version": "0.0.1",
   "description": "Angular Slack Api Provider",
   "main": "./dist/angular-slack.js",

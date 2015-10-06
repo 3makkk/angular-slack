@@ -1,4 +1,4 @@
-3makkk-angular-slack
+angular-3makkk-slack
 ===
 
 > Angular.js module to handle the Slack Api
