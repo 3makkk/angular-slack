@@ -7,7 +7,7 @@ Install
 ---
 
 ```
-$ bower install 3makkk-angular-slack
+$ bower install angular-3makkk-slack
 ```
 
 Usage
