@@ -1,4 +1,4 @@
-angular-slack
+3makkk-angular-slack
 ===
 
 > Angular.js module to handle the Slack Api
@@ -7,7 +7,7 @@ Install
 ---
 
 ```
-$ bower install angular-slack
+$ bower install 3makkk-angular-slack
 ```
 
 Usage
