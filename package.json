@@ -1,0 +1,32 @@
+{
+  "name": "angular-slack",
+  "version": "0.0.1",
+  "description": "Angular Slack Api Provider",
+  "main": "./dist/angular-slack.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "grunt": "^0.4.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/acidstudios/angular-trello.git"
+  },
+  "devDependencies": {
+    "grunt-contrib-concat": "^0.5.0",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-uglify": "^0.7.0",
+    "grunt-serve": "^0.1.6"
+  },
+  "keywords": [
+    "trello",
+    "angular",
+    "api",
+    "provider"
+  ],
+  "authors": [
+    "Sven Friedemann <sven@erstellbar.de>"
+  ],
+  "license": "MIT"
+}

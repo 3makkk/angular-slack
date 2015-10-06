@@ -1,0 +1,26 @@
+{
+  "name": "angular-slack",
+  "version": "0.0.1",
+  "authors": [
+    "Sven Friedemann <sven@erstellbar.de>"
+  ],
+  "description": "Angular Slack Api Provider",
+  "main": "src/angular-slack.js",
+  "keywords": [
+    "angular",
+    "slack",
+    "provider"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "license": "MIT",
+  "homepage": "erstellbar.de",
+  "dependencies": {
+    "angular": "~1.3.10"
+  }
+}
