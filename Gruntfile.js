@@ -22,7 +22,7 @@ module.exports = function(grunt) {
 					banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
 				},
 				files: {
-					'dist/angular-trello.js': ['src/angular-slack.js']
+					'dist/angular-slack.js': ['src/angular-slack.js']
 				}
 			}
 		},
