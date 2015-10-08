@@ -84,8 +84,6 @@ angular.module('slack', [])
                     setTopic: ApiServer + 'groups.setTopic',
                     unarchive: ApiServer + 'groups.unarchive'
                 }
-
-                
             };
 
             /**
@@ -114,6 +112,13 @@ angular.module('slack', [])
                 return 'width=' + popupWidth + ',height=' + popupHeight + ',' +
                     'left=' + popupLeft + ',top=' + popupTop + ',' +
                     'dialog=yes,dependent=yes,scrollbars=yes,location=yes';
+            }
+
+            function merge(required, optional) {
+                required = required || {};
+                optional = optional || {};
+
+                return required.combine(optional);
             }
 
             /**
@@ -296,17 +301,15 @@ angular.module('slack', [])
                      *
                      * @see https://api.slack.com/methods/channels.history
                      * @param channelId Channel to fetch history for.
-                     * @param opts Optional Arguments
-                     *  latest      End of time range of messages to include in results.
-                     *  oldest      Start of time range of messages to include in results.
-                     *  inclusive   Include messages with latest or oldest timestamp in results.
-                     *  count       Number of messages to return, between 1 and 1000.
+                     * @param opts  Optional Arguments
+                     * @param opts.latest      End of time range of messages to include in results.
+                     * @param opts.oldest      Start of time range of messages to include in results.
+                     * @param opts.inclusive   Include messages with latest or oldest timestamp in results.
+                     * @param opts.count       Number of messages to return, between 1 and 1000.
                      * @returns {*}
                      */
                     history: function(channelId, opts) {
-                        var defaults =  opts || {};
-                        var args = {channel: channelId};
-                        args = args.concat(defaults);
+                        var args = merge({channel: channelId}, opts);
                         return GET(urls.channels.history, args);
                     },
                     /**
@@ -366,8 +369,8 @@ angular.module('slack', [])
                      * The number of (non-deactivated) members in each channel is also returned.
                      *
                      * @see https://api.slack.com/methods/channels.list
-                     * @param opts
-                     *  exclude_archived    Don't return archived channels.
+                     * @param opts Optional Arguments
+                     * @param opts.exclude_archived    Don't return archived channels.
                      * @returns {*}
                      */
                     list: function(opts) {
@@ -443,6 +446,187 @@ angular.module('slack', [])
                      */
                     unarchive: function(channel) {
                         return GET(urls.channels.unarchive, {channel: channel});
+                    }
+                },
+                chat: {
+                    /**
+                     * This method deletes a message from a channel.
+                     *
+                     * Requires scope: post
+                     *
+                     * @see https://api.slack.com/methods/chat.delete
+                     * @param ts        Timestamp of the message to be deleted.
+                     * @param channel   Channel containing the message to be deleted.
+                     * @returns {*}
+                     */
+                    'delete': function(ts, channel){
+                        return GET(urls.chat.delete, {ts: ts, channel: channel});
+                    },
+                    /**
+                     * This method posts a message to a public channel, private group, or IM channel.
+                     *
+                     * Requires scope: post
+                     *
+                     * @see https://api.slack.com/methods/chat.postMessage
+                     * @param channel
+                     * @param text
+                     * @param opts Optional Arguments
+                     * @param opts.username        Name of bot.
+                     * @param opts.as_user         Pass true to post the message as the authed user, instead of as a bot
+                     * @param opts.parse           Change how messages are treated. See below.
+                     * @param opts.link_names      Find and link channel names and usernames.
+                     * @param opts.attachments     Structured message attachments.
+                     * @param opts.unfurl_links    Pass true to enable unfurling of primarily text-based content.
+                     * @param opts.unfurl_media    Pass false to disable unfurling of media content.
+                     * @param opts.icon_url        URL to an image to use as the icon for this message
+                     * @param opts.icon_emoji      emoji to use as the icon for this message. Overrides icon_url.
+                     * @returns {*}
+                     */
+                    postMessage: function(channel, text, opts){
+                        var args = merge({channel: channel, text: text}, opts);
+                        return GET(urls.chat.postMessage, args);
+                    },
+                    /**
+                     * This method updates a message in a channel.
+                     *
+                     * Requires scope: post
+                     *
+                     * @see https://api.slack.com/methods/chat.update
+                     * @param ts        Timestamp of the message to be updated.
+                     * @param channel   Channel containing the message to be updated
+                     * @param text      New text for the message, using the default formatting rules.
+                     * @param opts Optional Arguments
+                     * @param opts.attachments  Structured message attachments.
+                     * @param opts.parse        Change how messages are treated. See below.
+                     * @param opts*link_names   Find and link channel names and usernames.
+                     * @returns {*}
+                     */
+                    update: function(ts, channel, text, opts) {
+                        var args = merge({ts: ts, channel: channel, text: text}, opts);
+                        return GET(urls.chat.update, args);
+                    }
+                },
+                emoji: {
+                    /**
+                     * This method lists the custom emoji for a team
+                     *
+                     * @see https://api.slack.com/methods/emoji.list
+                     * @returns {*}
+                     */
+                    list: function(){
+                        return GET(urls.emoji.list, {});
+                    }
+                },
+                files: {
+                    /**
+                     * This method deletes a file from your team.
+                     *
+                     * Requires scope: post
+                     *
+                     * @see https://api.slack.com/methods/files.delete
+                     * @param fileID    ID of file to delete
+                     * @returns {*}
+                     */
+                    'delete': function(fileID){
+                        return GET(urls.files.delete, {file: fileID});
+                    },
+                    /**
+                     * This method returns information about a file in your team.
+                     *
+                     * @see https://api.slack.com/methods/files.info
+                     * @param file  File to fetch info for
+                     * @param opts  Optional Arguments
+                     * @param opts.count    Number of items to return per page.
+                     * @param opts.page     Page number of results to return.
+                     * @returns {*}
+                     */
+                    info: function(file, opts){
+                        return GET(urls.files.info, merge({file: file}, opts));
+                    },
+                    /**
+                     * This method returns a list of files within the team. It can be filtered and sliced in various ways.
+                     *
+                     * @see https://api.slack.com/methods/files.list
+                     * @param opts Optional Arguments
+                     * @param opts.user     Filter files created by a single user.
+                     * @param opts.ts_from  Filter files created after this timestamp (inclusive).
+                     * @param opts.ts_to    Filter files created before this timestamp (inclusive).
+                     * @param opts.types    Filter files by type
+                     * @param opts.count    Number of items to return per page.
+                     * @param opts.page     Page number of results to return.
+                     * @returns {*}
+                     */
+                    list: function(opts){
+                        return GET(urls.files.list, opts);
+                    },
+
+                    /**
+                     * This method allows you to create or upload an existing file.
+                     *
+                     * Only supports file argument as enctype of multipart/form-data!
+                     *
+                     * @see https://api.slack.com/methods/files.upload
+                     * @param file
+                     * @param opts Optional Arguments
+                     * @param opts.filetype         Slack-internal file type identifier.
+                     * @param opts.filename         Filename of file.
+                     * @param opts.title            Title of file.
+                     * @param opts.initial_comment  Initial comment to add to file.
+                     * @param opts.channels         Comma separated list of channels to share the file into.
+                     * @returns {*}
+                     */
+                    upload: function(file, opts){
+                        return GET(urls.files.upload, merge({file: file}, opts));
+                    }
+                },
+                groups: {
+                    archive: function(){
+                        throw "Not Implemented";
+                    },
+                    close: function(){
+                        throw "Not Implemented";
+                    },
+                    create: function(){
+                        throw "Not Implemented";
+                    },
+                    createChild: function(){
+                        throw "Not Implemented";
+                    },
+                    history: function(){
+                        throw "Not Implemented";
+                    },
+                    info: function(){
+                        throw "Not Implemented";
+                    },
+                    invite: function(){
+                        throw "Not Implemented";
+                    },
+                    kick: function(){
+                        throw "Not Implemented";
+                    },
+                    leave: function(){
+                        throw "Not Implemented";
+                    },
+                    list: function(){
+                        throw "Not Implemented";
+                    },
+                    mark: function(){
+                        throw "Not Implemented";
+                    },
+                    open: function(){
+                        throw "Not Implemented";
+                    },
+                    rename: function(){
+                        throw "Not Implemented";
+                    },
+                    setPurpose: function(){
+                        throw "Not Implemented";
+                    },
+                    setTopic: function(){
+                        throw "Not Implemented";
+                    },
+                    unarchive: function(){
+                        throw "Not Implemented";
                     }
                 }
             };
