@@ -1,4 +1,4 @@
-/*! angular-3makkk-slack 2015-10-08 */
+/*! angular-3makkk-slack 2015-10-20 */
 angular.module("slack", []).provider("Slack", function SlackProvider() {
     var clientId, redirectUri, secret;
     this.config = function(id, uri, scrt) {
@@ -570,8 +570,19 @@ angular.module("slack", []).provider("Slack", function SlackProvider() {
                 close: function() {
                     throw "Not Implemented";
                 },
-                create: function() {
-                    throw "Not Implemented";
+                /**
+                     * This method creates a private group
+                     *
+                     * Requires scope: post
+                     *
+                     * @see https://api.slack.com/methods/groups.create
+                     * @param name Name of private group
+                     * @returns {*}
+                     */
+                create: function(name) {
+                    return GET(urls.groups.create, {
+                        name: name
+                    });
                 },
                 createChild: function() {
                     throw "Not Implemented";
@@ -582,8 +593,22 @@ angular.module("slack", []).provider("Slack", function SlackProvider() {
                 info: function() {
                     throw "Not Implemented";
                 },
-                invite: function() {
-                    throw "Not Implemented";
+                /**
+                     * This method is used to invite a user to a private group.
+                     * The calling user must be a member of the group
+                     *
+                     * Requires scope: post
+                     *
+                     * @see https://api.slack.com/methods/groups.invite
+                     * @param group Private group to invite user to.
+                     * @param user  User to invite.
+                     * @returns {*}
+                     */
+                invite: function(group, user) {
+                    return GET(urls.groups.invite, {
+                        channel: group,
+                        user: user
+                    });
                 },
                 kick: function() {
                     throw "Not Implemented";
@@ -603,8 +628,21 @@ angular.module("slack", []).provider("Slack", function SlackProvider() {
                 rename: function() {
                     throw "Not Implemented";
                 },
-                setPurpose: function() {
-                    throw "Not Implemented";
+                /**
+                     * This method is used to change the purpose of a private group. The calling user must be a member of the private group.
+                     *
+                     * Requires scope: post
+                     *
+                     * @see https://api.slack.com/methods/groups.setPurpose
+                     * @param group     Private group to set the purpose of
+                     * @param purpose   The new purpose
+                     * @returns {*}
+                     */
+                setPurpose: function(group, purpose) {
+                    return GET(urls.groups.setPurpose, {
+                        channel: group,
+                        purpose: purpose
+                    });
                 },
                 setTopic: function() {
                     throw "Not Implemented";
