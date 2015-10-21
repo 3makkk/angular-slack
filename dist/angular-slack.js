@@ -1,4 +1,4 @@
-/*! angular-3makkk-slack 2015-10-20 */
+/*! angular-3makkk-slack 2015-10-21 */
 angular.module("slack", []).provider("Slack", function SlackProvider() {
     var clientId, redirectUri, secret;
     this.config = function(id, uri, scrt) {
@@ -179,20 +179,27 @@ angular.module("slack", []).provider("Slack", function SlackProvider() {
         return {
             urls: urls,
             authenticate: function(params) {
-                var qs = "&" + toQueryString(params);
-                var self = this, deferred = $q.defer(), authUrl = urls.authorize + "?client_id=" + clientId + "&redirect_uri=" + redirectUri + qs;
+                var required = {
+                    client_id: clientId,
+                    redirect_uri: redirectUri
+                };
+                var qs = "?" + toQueryString(required);
+                if (params) {
+                    qs = qs + "&" + toQueryString(params);
+                }
+                var self = this, deferred = $q.defer(), authUrl = urls.authorize + qs;
                 function listener(event) {
                     var response = queryParamsFromUrl(event.data);
-                    console.log(event);
                     if (response.access_denied) {
                         deferred.reject(response);
                     } else if (response.code) {
-                        var accessUrl = urls.oauth.access, params = {
+                        var oAuthParams = {
                             client_id: clientId,
                             code: response.code,
-                            client_secret: secret
+                            client_secret: secret,
+                            redirect_uri: redirectUri
                         };
-                        GET(accessUrl, params).then(function(response) {
+                        GET(urls.oauth.access, oAuthParams).then(function(response) {
                             oauth = self.oauth = response;
                             deferred.resolve(oauth);
                         });

@@ -226,29 +226,35 @@ angular.module('slack', [])
                 urls: urls,
 
                 authenticate: function (params) {
-                    var qs = '&' + toQueryString(params);
+                    var required = {
+                        client_id: clientId,
+                        redirect_uri: redirectUri
+                    };
+                    var qs = '?' + toQueryString(required);
+                    if(params) {
+                        qs = qs + '&' + toQueryString(params);
+                    }
+
                     var self = this
                         , deferred = $q.defer()
-                        , authUrl = urls.authorize + '?client_id=' + clientId + '&redirect_uri=' + redirectUri + qs;
+                        , authUrl = urls.authorize + qs;
 
                     function listener(event) {
 
                         var response = queryParamsFromUrl(event.data);
-                        console.log(event);
 
                         if (response.access_denied) {
                             deferred.reject(response);
-                        }
+                        } else if (response.code) {
 
-                        else if (response.code) {
-                            var accessUrl = urls.oauth.access,
-                            params =  {
+                            var oAuthParams =  {
                                 client_id: clientId,
-                                    code: response.code,
-                                    client_secret: secret
+                                code: response.code,
+                                client_secret: secret,
+                                redirect_uri: redirectUri
                             };
 
-                            GET(accessUrl, params).then(function(response) {
+                            GET(urls.oauth.access, oAuthParams).then(function(response) {
                                 oauth = self.oauth = response;
                                 deferred.resolve(oauth);
                             });
