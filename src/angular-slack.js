@@ -633,8 +633,8 @@ angular.module('slack', [])
                     leave: function(){
                         throw "Not Implemented";
                     },
-                    list: function(){
-                        throw "Not Implemented";
+                    list: function(opts){
+                        return GET(urls.groups.list, opts);
                     },
                     mark: function(){
                         throw "Not Implemented";

@@ -1,4 +1,4 @@
-/*! angular-3makkk-slack 2015-10-21 */
+/*! angular-3makkk-slack 2015-10-28 */
 angular.module("slack", []).provider("Slack", function SlackProvider() {
     var clientId, redirectUri, secret;
     this.config = function(id, uri, scrt) {
@@ -623,8 +623,8 @@ angular.module("slack", []).provider("Slack", function SlackProvider() {
                 leave: function() {
                     throw "Not Implemented";
                 },
-                list: function() {
-                    throw "Not Implemented";
+                list: function(opts) {
+                    return GET(urls.groups.list, opts);
                 },
                 mark: function() {
                     throw "Not Implemented";
